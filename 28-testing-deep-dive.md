@@ -13,6 +13,7 @@ Table Of Contents:
 
 1. [Introduction](#introduction)
 2. [Uncaught Exceptions](#uncaught-exceptions)
+3. [Mocks](#mocks)
 
 ## Introduction
 
@@ -47,13 +48,15 @@ exception coming from", you know? If I have written a test that integrates multi
 deep and I dont' have any context. So, without domains, which none of the frameworks I used have, I can definitely see
 the issue.
 
-**Adam Christian**: So, we have a pretty interesing situation, which is that people sort of tend toward mixing unit tests
+**Adam Christian**: So, we have a pretty interesting situation, which is that people sort of tend toward mixing unit tests
 with functional tests, because they're used to sort of the way there unit test runner works. And so, when you get to a
 large codebase that has lots and lots of tests this becomes an absolute desaster. Especially, when it's part of your
 build process. So, somebody has to spend hours digging through something somebody else did trying to figure out where
 this exception came from. So, that's why the people that are the most successful are the ones that break these down
 to the smallest little encapsulated modules. That's what excites me about domains. And the node community is moving, 
 I think, more in that direction, which is an exciting and definitely healthy thing.
+
+## Mocks
 
 **Daniel Shaw**: So, Adam, to have successful unit tests, do you have to have mocks?
 
@@ -74,5 +77,49 @@ an HTTP server and test that, because I'll write so much less testing code.
 **Daniel Shaw**: So, let's give people some points of reference. So, you know, you say it would be really nice to have a
 nice twitter mock. What other enviroments have that in place and what could we look to as inspiration?
 
-<!-- Continue at 6:20! -->
+**Adam Christian**: Well, I have seen a handful of pretty interesting mock stuff in the Ruby community. I'm not a Ruby guy,
+but I see people tweeting and blogging about that stuff. I don't know how deep the rabbit hole goes, but whoever starts on
+a project that is a collection of commonly used APIs to mock. You know, you got your Twitters, and your Facebooks and your
+Githubs, and your LinkedIns, blablabla... You know there is a handful of stuff that most people are using, especially for
+auth. And if there were some really nice drop-in mocks of that, I think, that would get a lot of traffic and contributions.
+That would be pretty cool to see.
+
+(*skype ringtone, trying to get substack on the line ;)*)
+
+**Domenic Denicola**: Yeah, I actually wrote up something a while ago that I still haven't implemented. I'll put it in the chat.
+Just for my idea how a mock HTTP library would work. You just say: here is a mock server and here is a mock request and it should
+give you this error or it should respond with a response that has this error or should respond with a string or it should respond
+with some headers. Like, you could write these in one line and get a nice little mock request or response object, but I can't
+do that write now.
+
+**Nuno Job**: So, one thing that's...if you think about [Nodejitsu](http://nodejitsu.com), one thing that sets us apart from other
+PaaS is that we can run on multiple infrastructures. So we have clients on Amazon, clients on Rackspace...we run our public cloud
+on Joyent and it's blazing fast. And we have people running on their own servers. So, that means, we have a common API. You
+can think of it like a translation which we call package cloud (?), that is kind of like libfog (?) in Ruby. It has the same
+set of tests, but it needs to run agains Rackspace, it needs to run against Amazon, it needs to run against Joyent. I mean,
+I'm talking about Solaris, Windows. Things that are completely different. We use [Nock](https://github.com/flatiron/nock) to do
+that. It's super simple. Before, I can honestly say that it was a nightmare. If you think about it, spinning up server on
+Rackspace from one 1min to 5min and sometimes in our tests we need to spin up 10. So, the tests used to run in something like
+two or three hours and now they run within like 15 seconds with Nock. It's super simple to do. It's just a JSON file, that says
+it's a GET, you respond this, even if it's chunks. Whatever it is. It's really super simple. I feel like this problem is solved.
+I just don't feel like, we, nodejitsu and Pedro [Texeira] who did Nock have advertised it enough. 
+But there's a [nodetuts](http://nodetuts.com/) about it.
+
+**Adam Christian**: The problem I'm talking about is not whether we have the technology to do it. It's people kind of sitting
+down and getting together adn using the awesome community we have to build some of this stuff. Because for me, you can totally
+build tests that ping these outside services, right? But what we're looking for is speed. People don't want their unit tests to
+take 20 minutes, because they are waiting on requests. So, I don't see how anybody could really test their app without decent
+mocks for all the different services that they are interacting with.
+
+**Daniel Shaw**: Well, maybe as kind of product of this Podcast we can come up with a community whishlist and can see if we can
+make this happen. That would be fun.
+
+**Adam Christian**: That would be awesome. Totally. I'm happy to speardhead that as well.
+
+**Daniel Shaw**: Let's put that in the show notes and make that happen.
+
+**Domenic Denicola**: Actually, Nuno, do you wanna talk about Nock? Because I'd never heard about it and I'm looking at the readme
+and it looks amazing.
+
+<!-- Continue at 9:50! -->
 
