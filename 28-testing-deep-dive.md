@@ -19,7 +19,8 @@ Table Of Contents:
 
 **Daniel Shaw**: Welcome to NodeUp 28, a testing deep dive with myself, dshaw, Nuno Job, Domenic Denicola
 and Adam Christian. We're gonna talk about testing today and hopefully get into some of the testing approaches
-in Node and Nuno is gonna tell you all about specify and why you should do that. And we're gonna ignore him.
+in Node and Nuno is gonna tell you all about [specify](https://github.com/dscape/specify) and why you should do that. 
+And we're gonna ignore him.
 
 **Nuno Job**: Welcome, guys. Today we're gonna talk a lot about testing as Daniel just said. If you follow Node core
 you know that most of Node core, if not everything, is tested as...each functionality, each test is a single js file.
@@ -29,15 +30,15 @@ that. In this show we're gonna talk a lot about the frameworks and the decisions
 seperate files that instead of encapsulating a single test, encapsulate a series of tests.
 And we're also gonna talk about why [domains](http://nodejs.org/api/domain.html) are important. 
 But we're not gonna go into a lot of detail. And what that means for all of you in the future. If you don't know, 
-domains is a feature that got introduced in node.js in 0.7 and they basically allow you to put context in your 
-node programs. Before, when you call a callback, node lost track of where it was. It didn't have a stack trace and 
-it couldn't know the context where that was fired. So, if something went wrong, like an uncaught exception, all 
-you could do is catch an uncaught exception, but you couldn't really know which user that uncaught exception was from. 
-So, domains fix that and that's gonna be very important going forward for  testing, because that's something we 
-really need in testing if you want accurate counts and you wanna know why your program broke. 
+[domains](http://nodejs.org/api/domain.html) is a feature that got introduced in node.js in 0.7 and they basically allow 
+you to put context in your node programs. Before, when you call a callback, node lost track of where it was. It didn't 
+have a stack trace and it couldn't know the context where that was fired. So, if something went wrong, like an uncaught 
+exception, all you could do is catch an uncaught exception, but you couldn't really know which user that uncaught exception was from. 
+So, [domains](http://nodejs.org/api/domain.html) fix that and that's gonna be very important going forward for  testing, 
+because that's something we  really need in testing if you want accurate counts and you wanna know why your program broke. 
 So, I know that there's some people here, Domenic for instance is a contributor to [chai.js](http://chaijs.com/). 
-Adam, who is from Saucelabs wrote a lot of testing code. He wrote jellyfish and a lot of other frameworks. I'm actually curious
-what all of you guys think about uncaught exceptions and how you have handled it in your code so far.
+Adam, who is from Saucelabs wrote a lot of testing code. He wrote jellyfish and a lot of other frameworks. I'm actually 
+curious what all of you guys think about uncaught exceptions and how you have handled it in your code so far.
 
 ## Uncaught Exceptions
 
@@ -45,16 +46,16 @@ what all of you guys think about uncaught exceptions and how you have handled it
 caught. So, that's good. I mean, I try to write really small, focused unit tests. So, usually you know exactly how it's
 gonna break, but if something is going wrong, I have definitely spent many minutes going like "where is this uncaught 
 exception coming from?", you know? If I have written a test that integrates multiple levels itself, it's like four levels
-deep and I dont' have any context. So, without domains, which none of the frameworks I used have, I can definitely see
-the issue.
+deep and I dont' have any context. So, without [domains](http://nodejs.org/api/domain.html), which none of the frameworks 
+I used have, I can definitely see the issue.
 
 **Adam Christian**: So, we have a pretty interesting situation, which is that people sort of tend toward mixing unit tests
 with functional tests, because they're used to sort of the way there unit test runner works. And so, when you get to a
 large codebase that has lots and lots of tests this becomes an absolute desaster. Especially, when it's part of your
 build process. So, somebody has to spend hours digging through something somebody else did trying to figure out where
 this exception came from. So, that's why the people that are the most successful are the ones that break these down
-to the smallest little encapsulated modules. That's what excites me, obviously, about domains. And the node community is moving, 
-I think, more in that direction, which is an exciting and definitely healthy thing.
+to the smallest little encapsulated modules. That's what excites me, obviously, about [domains](http://nodejs.org/api/domain.html). 
+And the node community is moving, I think, more in that direction, which is an exciting and definitely healthy thing.
 
 ## Mocks
 
@@ -100,9 +101,9 @@ set of tests, but it needs to run agains Rackspace, it needs to run against Amaz
 I'm talking about Solaris, Windows. Things that are completely different. We use [Nock](https://github.com/flatiron/nock) to do
 that. It's super simple. Before, I can honestly say that it was a nightmare. If you think about it, spinning up server on
 Rackspace from one 1min to 5min and sometimes in our tests we need to spin up 10. So, the tests used to run in something like
-two or three hours and now they run within like 15 seconds with Nock. It's super simple to do. It's just a JSON file, that says
+two or three hours and now they run within like 15 seconds with [Nock](https://github.com/flatiron/nock). It's super simple to do. It's just a JSON file, that says
 it's a GET, you respond this, even if it's chunks. Whatever it is. It's really super simple. I feel like this problem is solved.
-I just don't feel like, we, nodejitsu and Pedro [Texeira] who did Nock have advertised it enough. 
+I just don't feel like, we, nodejitsu and Pedro [Texeira] who did [Nock](https://github.com/flatiron/nock) have advertised it enough. 
 But there's a [nodetuts](http://nodetuts.com/) about it.
 
 **Adam Christian**: The problem I'm talking about is not whether we have the technology to do it. It's people kind of sitting
@@ -118,8 +119,48 @@ make this happen. That would be fun.
 
 **Daniel Shaw**: Let's put that in the show notes and make that happen.
 
-**Domenic Denicola**: Actually, Nuno, do you wanna talk about Nock? Because I'd never heard about it and I'm looking at the readme
-and it looks amazing.
+**Domenic Denicola**: Actually, Nuno, do you wanna talk about [Nock](https://github.com/flatiron/nock)? Because I'd never heard 
+about it and I'm looking at the readme and it looks amazing.
 
-<!-- Continue at 9:50! -->
+**Nuno Job**: So, [Nock](https://github.com/flatiron/nock) basically overrides the HTTP request and it does very little, but it 
+allows you to...when someone does a native request in Node, [Nock](https://github.com/flatiron/nock) will intercept it and it keeps 
+stack of routes that you can hit. Like GET /route and it returns a response for that. So, it's kind of DSL-ish, so you put like dot get 
+this, respond with this and then in your application you do your normal requests. If you put Nock on, I normally set an environement 
+variable and if I write  NOCK=on npm test it will just run the tests with [Nock](https://github.com/flatiron/nock). If I don't put that, 
+it will do the integration tests. It's seamless. So for instance in [Nano](https://github.com/dscape/nano), which is a CouchDB driver 
+I have, when I wanna do a new version, I do npm test and that's with mocks. When I'm doing from a contributor and I'm not sure about the 
+code I usually run npm test without the mocks to make sure that things are running. So it's pretty seamless, it's very easy. It just have 
+like the fixtures and for each .js test file I have the corresponding specification. That's it. It just runs and it intercepts. It's like 
+one line of code I put there with this little helper. And that pretty much does the trick for me, does the trick for Nodejitsu when dealing 
+with Rackspace, Amazon and Joyent. This is really complicated, I mean these are not the kind of...the Twitter API is like cheesecake compared 
+to these APIs. These APIs take time, they are not as consistent as the Twitter API. They are spinning up VMs, right. I feel like 
+[Nock](https://github.com/flatiron/nock)  is a really good solution for that.
+
+**11:25 Someone**: I have a question about that, Nuno. So like if you have a giant set of tests, is there a nice way to just define 
+run subsets of that. Because usually if you're going...if you're doing stuff in a build you just wanna run a chunk of those, but if
+you're looking at going live you want to run them all. That's a problem that a lot of people have, they get this build that just 
+gets bigger and bigger. Devs only want to run a small chunk. I'm curious what you think.
+
+**Nuno Job**: So, in [specify](https://github.com/dscape/specify) you can specify which files you wanna run and you can specify which 
+tests inside the files you wanna run because you give them names and you you can pass the names in the command line. Only those tests will 
+run. I haven't added wildcards which would be like colon something and then it would run those wildcard tests. As for [Nock](https://github.com/flatiron/nock), you need to add Nock to each js file, on the top something like var nock = nock('http://twitter.com') and it then it
+grabs the specification from the nock object, which means since it's per file, as long as you run the file, you will have the mocks or not.
+Controlled by your environement variable. If you don't run the file, you don't run the test. It's really is simple to make sure that you're
+selecting just those tests from those files and you have control over if they have mocks or not. I mean, in Nodejitsu we need this all the time.
+So, this is quite essential. We can't afford to run all the tests all the time. - Hey, welcome substack.
+
+**James Halliday**: Yooo, so, I actually...I missed a few minutes there, but I did catch the start of it. You guys are talking about mocks. I
+want to caution people against going down the mocking route, because it's very easy testing against your mocks instead of reality. And, like, you
+don't want to have to write tests against your mocks to make sure they're compatible with reality. A lot of weird bugs happen when your mocks
+get out of sync with how reality actually works. What I would advise people do is instead of writing so many mocks, you should probably just 
+seperate out your code into the code that does more side effect related I/O and then the code that does the more functional stuff. You really
+want to minimize that layer that's actually doing the mocking, I think, as much as possible. That really needs to be said.
+
+**Daniel Shaw**: Substack, how do you unit test something like [seaport](https://github.com/substack/seaport), which is all about I/O?
+
+**James Halliday**: I don't, I just run the real I/O. I/O is cheap in Node, I/O is really cheap in Node. You can spin up server and bring
+them down like it's nothing. In tens of milliseconds all of that happens.
+
+
+<!-- Continue at 14:30! -->
 
