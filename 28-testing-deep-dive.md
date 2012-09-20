@@ -143,7 +143,7 @@ gets bigger and bigger. Devs only want to run a small chunk. I'm curious what yo
 
 **Nuno Job**: So, in [specify](https://github.com/dscape/specify) you can specify which files you wanna run and you can specify which 
 tests inside the files you wanna run because you give them names and you you can pass the names in the command line. Only those tests will 
-run. I haven't added wildcards which would be like colon something and then it would run those wildcard tests. As for [Nock](https://github.com/flatiron/nock), you need to add Nock to each js file, on the top something like var nock = nock('http://twitter.com') and it then it
+run. I haven't added wildcards which would be like colon something and then it would run those wildcard tests. As for [Nock](https://github.com/flatiron/nock), you need to add Nock to each js file, on the top something like ```var nock = nock('http://twitter.com')``` and it then it
 grabs the specification from the nock object, which means since it's per file, as long as you run the file, you will have the mocks or not.
 Controlled by your environement variable. If you don't run the file, you don't run the test. It's really is simple to make sure that you're
 selecting just those tests from those files and you have control over if they have mocks or not. I mean, in Nodejitsu we need this all the time.
